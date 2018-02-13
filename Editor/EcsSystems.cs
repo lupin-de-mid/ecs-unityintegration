@@ -54,17 +54,10 @@ namespace LeopotamGroup.Ecs.UnityIntegration {
             if (!systems.IsRunActive) {
                 GUI.enabled = false;
             }
-            DrawRunSystems ("Update systems", systems, EcsRunSystemType.Update);
-            DrawRunSystems ("LateUpdate systems", systems, EcsRunSystemType.LateUpdate);
-            DrawRunSystems ("FixedUpdate systems", systems, EcsRunSystemType.FixedUpdate);
-            GUI.enabled = guiEnabled;
-        }
-
-        void DrawRunSystems (string title, EcsSystems systems, EcsRunSystemType runSystemType) {
-            systems.GetRunSystems (runSystemType, _runList);
+            systems.GetRunSystems (_runList);
             if (_runList.Count > 0) {
                 GUILayout.BeginVertical (GUI.skin.box);
-                EditorGUILayout.LabelField (title, EditorStyles.boldLabel);
+                EditorGUILayout.LabelField ("Run systems", EditorStyles.boldLabel);
                 EditorGUI.indentLevel++;
                 foreach (var system in _runList) {
                     EditorGUILayout.LabelField (system.GetType ().Name);
@@ -73,6 +66,7 @@ namespace LeopotamGroup.Ecs.UnityIntegration {
                 GUILayout.EndVertical ();
                 _runList.Clear ();
             }
+            GUI.enabled = guiEnabled;
         }
     }
 }
