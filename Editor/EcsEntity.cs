@@ -24,6 +24,7 @@ namespace LeopotamGroup.Ecs.UnityIntegration {
             GUI.enabled = true;
             DrawComponents (_componentsCache);
             GUI.enabled = guiEnabled;
+            EditorUtility.SetDirty (target);
         }
 
         void OnEnable () {
