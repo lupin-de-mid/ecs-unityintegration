@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace LeopotamGroup.Ecs.UnityIntegration {
     [CustomEditor (typeof (EcsSystemsObserver))]
-    class EcsSystemsObserverInspector : Editor {
+    sealed class EcsSystemsObserverInspector : Editor {
         static readonly List<IEcsPreInitSystem> _preInitList = new List<IEcsPreInitSystem> ();
 
         static readonly List<IEcsInitSystem> _initList = new List<IEcsInitSystem> ();

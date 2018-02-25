@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace LeopotamGroup.Ecs.UnityIntegration {
     [CustomEditor (typeof (EcsWorldObserver))]
-    class EcsWorldObserverInspector : Editor {
+    sealed class EcsWorldObserverInspector : Editor {
         public override void OnInspectorGUI () {
             var observer = target as EcsWorldObserver;
             var stats = observer.GetStats ();

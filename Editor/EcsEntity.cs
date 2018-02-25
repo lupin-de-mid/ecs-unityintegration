@@ -5,6 +5,7 @@
 // Copyright (c) 2018 Leopotam <leopotam@gmail.com>
 // ----------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
@@ -12,7 +13,7 @@ using UnityEngine;
 
 namespace LeopotamGroup.Ecs.UnityIntegration {
     [CustomEditor (typeof (EcsEntityObserver))]
-    class EcsEntityObserverInspector : Editor {
+    sealed class EcsEntityObserverInspector : Editor {
         static List<object> _componentsCache = new List<object> (16);
 
         EcsEntityObserver _entity;
@@ -40,13 +41,15 @@ namespace LeopotamGroup.Ecs.UnityIntegration {
             foreach (var component in componentsCache) {
                 var type = component.GetType ();
                 GUILayout.BeginVertical (GUI.skin.box);
-                EditorGUILayout.LabelField (type.Name, EditorStyles.boldLabel);
-                var indent = EditorGUI.indentLevel;
-                EditorGUI.indentLevel++;
-                foreach (var field in type.GetFields (BindingFlags.Instance | BindingFlags.Public)) {
-                    DrawTypeField (component, field);
+                if (!EcsComponentInspectors.Render (type.Name, type, component)) {
+                    EditorGUILayout.LabelField (type.Name, EditorStyles.boldLabel);
+                    var indent = EditorGUI.indentLevel;
+                    EditorGUI.indentLevel++;
+                    foreach (var field in type.GetFields (BindingFlags.Instance | BindingFlags.Public)) {
+                        DrawTypeField (component, field);
+                    }
+                    EditorGUI.indentLevel = indent;
                 }
-                EditorGUI.indentLevel = indent;
                 GUILayout.EndVertical ();
                 EditorGUILayout.Space ();
             }
@@ -54,19 +57,66 @@ namespace LeopotamGroup.Ecs.UnityIntegration {
 
         void DrawTypeField (object instance, FieldInfo field) {
             var fieldValue = field.GetValue (instance);
-            var fieldType = fieldValue == null ? field.FieldType : fieldValue.GetType ();
-            if (fieldType == typeof (UnityEngine.Object) || fieldType.IsSubclassOf (typeof (UnityEngine.Object))) {
-                GUILayout.BeginHorizontal ();
-                EditorGUILayout.LabelField (field.Name, GUILayout.MaxWidth (EditorGUIUtility.labelWidth - 16));
-                var guiEnabled = GUI.enabled;
-                GUI.enabled = false;
-                EditorGUILayout.ObjectField (fieldValue as UnityEngine.Object, fieldType, false);
-                GUI.enabled = guiEnabled;
-                GUILayout.EndHorizontal ();
-                return;
+            var fieldType = field.FieldType;
+            if (!EcsComponentInspectors.Render (field.Name, fieldType, fieldValue)) {
+                if (fieldType == typeof (UnityEngine.Object) || fieldType.IsSubclassOf (typeof (UnityEngine.Object))) {
+                    GUILayout.BeginHorizontal ();
+                    EditorGUILayout.LabelField (field.Name, GUILayout.MaxWidth (EditorGUIUtility.labelWidth - 16));
+                    var guiEnabled = GUI.enabled;
+                    GUI.enabled = false;
+                    EditorGUILayout.ObjectField (fieldValue as UnityEngine.Object, fieldType, false);
+                    GUI.enabled = guiEnabled;
+                    GUILayout.EndHorizontal ();
+                    return;
+                }
+                var strVal = fieldValue != null ? string.Format (System.Globalization.CultureInfo.InvariantCulture, "{0}", fieldValue) : "null";
+                EditorGUILayout.TextField (field.Name, strVal);
             }
-            var strVal = fieldValue != null ? string.Format (System.Globalization.CultureInfo.InvariantCulture, "{0}", fieldValue) : "null";
-            EditorGUILayout.LabelField (field.Name, strVal);
         }
+    }
+
+    static class EcsComponentInspectors {
+        static readonly Dictionary<Type, IEcsComponentInspector> _inspectors = new Dictionary<Type, IEcsComponentInspector> ();
+
+        static EcsComponentInspectors () {
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies ()) {
+                foreach (var type in assembly.GetTypes ()) {
+                    if (typeof (IEcsComponentInspector).IsAssignableFrom (type) && !type.IsInterface) {
+                        var inspector = Activator.CreateInstance (type) as IEcsComponentInspector;
+                        var componentType = inspector.GetFieldType ();
+                        if (_inspectors.ContainsKey (componentType)) {
+                            Debug.LogWarningFormat ("Inspector for \"{0}\" already exists, new inspector will be used instead.", componentType.Name);
+                        }
+                        _inspectors[componentType] = inspector;
+                    }
+                }
+            }
+        }
+
+        public static bool Render (string label, Type type, object value) {
+            IEcsComponentInspector inspector;
+            if (_inspectors.TryGetValue (type, out inspector)) {
+                inspector.OnGUI (label, value);
+                return true;
+            }
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Custom inspector for specified field type.
+    /// </summary>
+    public interface IEcsComponentInspector {
+        /// <summary>
+        /// Supported field type.
+        /// </summary>
+        Type GetFieldType ();
+
+        /// <summary>
+        /// Renders provided instance of specified type.
+        /// </summary>
+        /// <param name="label">Label of field.</param>
+        /// <param name="value">Value of field.</param>
+        void OnGUI (string label, object value);
     }
 }

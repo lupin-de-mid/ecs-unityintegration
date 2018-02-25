@@ -57,10 +57,38 @@ public class Startup : MonoBehaviour {
 ```
 
 
-# Limitations
+# FAQ
 
-## I can't edit component fields at any ecs-entity observer.
-By design, observer works as readonly copy of ecs world data.
+### I can't edit component fields at any ecs-entity observer.
+By design, observer works as readonly copy of ecs world data - you can copy value, but not change it.
+
+### I want to create custom inspector view for my component.
+Custom component `MyComponent1`:
+```
+public enum MyEnum { True, False }
+
+public class MyComponent1 {
+    public MyEnum State;
+    public string Name;
+}
+```
+Inspector for `MyComponent1` (should be placed in `Editor` folder):
+```
+class MyComponent1Inspector : IEcsComponentInspector {
+    Type IEcsComponentInspector.GetFieldType () {
+        return typeof (MyComponent1);
+    }
+
+    void IEcsComponentInspector.OnGUI (string label, object value) {
+        var component = value as MyComponent1;
+        EditorGUILayout.LabelField (label, EditorStyles.boldLabel);
+        EditorGUI.indentLevel++;
+        EditorGUILayout.EnumPopup ("State", component.State);
+        EditorGUILayout.TextField ("Name", component.Name);
+        EditorGUI.indentLevel--;
+    }
+}
+```
 
 # License
 The software released under the terms of the MIT license. Enjoy.
