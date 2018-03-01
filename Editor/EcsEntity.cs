@@ -1,6 +1,6 @@
 ﻿// ----------------------------------------------------------------------------
 // The MIT License
-// UnityEditor integration https://github.com/Leopotam/ecs-unityintegration
+// Unity integration https://github.com/Leopotam/ecs-unityintegration
 // for ECS framework https://github.com/Leopotam/ecs
 // Copyright (c) 2018 Leopotam <leopotam@gmail.com>
 // ----------------------------------------------------------------------------
@@ -11,9 +11,9 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace LeopotamGroup.Ecs.UnityIntegration {
+namespace LeopotamGroup.Ecs.UnityIntegration.Editor {
     [CustomEditor (typeof (EcsEntityObserver))]
-    sealed class EcsEntityObserverInspector : Editor {
+    sealed class EcsEntityObserverInspector : UnityEditor.Editor {
         static List<object> _componentsCache = new List<object> (16);
 
         EcsEntityObserver _entity;

@@ -1,6 +1,6 @@
 ﻿// ----------------------------------------------------------------------------
 // The MIT License
-// UnityEditor integration https://github.com/Leopotam/ecs-unityintegration
+// Unity integration https://github.com/Leopotam/ecs-unityintegration
 // for ECS framework https://github.com/Leopotam/ecs
 // Copyright (c) 2018 Leopotam <leopotam@gmail.com>
 // ----------------------------------------------------------------------------
@@ -9,7 +9,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace LeopotamGroup.Ecs.UnityIntegration.Inspectors {
+namespace LeopotamGroup.Ecs.UnityIntegration.Editor.Inspectors {
     sealed class QuaternionInspector : IEcsComponentInspector {
         Type IEcsComponentInspector.GetFieldType () {
             return typeof (Quaternion);

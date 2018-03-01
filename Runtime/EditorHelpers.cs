@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // The MIT License
-// UnityEditor integration https://github.com/Leopotam/ecs-unityintegration
+// Unity integration https://github.com/Leopotam/ecs-unityintegration
 // for ECS framework https://github.com/Leopotam/ecs
 // Copyright (c) 2018 Leopotam <leopotam@gmail.com>
 // ----------------------------------------------------------------------------

@@ -3,8 +3,6 @@
     "references": [
         "LeopotamGroup.Ecs"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": []
 }
