@@ -45,7 +45,10 @@ namespace LeopotamGroup.Ecs.UnityIntegration {
         }
 
         void IEcsSystemsDebugListener.OnSystemsDestroyed () {
+            // for immediate unregistering this MonoBehaviour from ECS.
             OnDestroy ();
+            // for delayed destroying GameObject.
+            Destroy (gameObject);
         }
     }
 
