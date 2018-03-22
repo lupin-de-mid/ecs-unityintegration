@@ -1,6 +1,6 @@
 ﻿// ----------------------------------------------------------------------------
 // The MIT License
-// UnityEditor integration https://github.com/Leopotam/ecs-unityintegration
+// Unity integration https://github.com/Leopotam/ecs-unityintegration
 // for ECS framework https://github.com/Leopotam/ecs
 // Copyright (c) 2018 Leopotam <leopotam@gmail.com>
 // ----------------------------------------------------------------------------
@@ -8,9 +8,9 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace LeopotamGroup.Ecs.UnityIntegration {
+namespace LeopotamGroup.Ecs.UnityIntegration.Editor {
     [CustomEditor (typeof (EcsWorldObserver))]
-    class EcsWorldObserverInspector : Editor {
+    sealed class EcsWorldObserverInspector : UnityEditor.Editor {
         public override void OnInspectorGUI () {
             var observer = target as EcsWorldObserver;
             var stats = observer.GetStats ();

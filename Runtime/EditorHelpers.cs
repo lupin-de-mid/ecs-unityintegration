@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // The MIT License
-// UnityEditor integration https://github.com/Leopotam/ecs-unityintegration
+// Unity integration https://github.com/Leopotam/ecs-unityintegration
 // for ECS framework https://github.com/Leopotam/ecs
 // Copyright (c) 2018 Leopotam <leopotam@gmail.com>
 // ----------------------------------------------------------------------------
@@ -45,7 +45,10 @@ namespace LeopotamGroup.Ecs.UnityIntegration {
         }
 
         void IEcsSystemsDebugListener.OnSystemsDestroyed () {
+            // for immediate unregistering this MonoBehaviour from ECS.
             OnDestroy ();
+            // for delayed destroying GameObject.
+            Destroy (gameObject);
         }
     }
 
