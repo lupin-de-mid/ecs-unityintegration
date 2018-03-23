@@ -3,9 +3,7 @@
 # Unity integration for Entity Component System framework
 [Unity integration](https://github.com/Leopotam/ecs-unityintegration) for [ECS framework](https://github.com/Leopotam/ecs).
 
-> **This software in work-in-progress stage.**
-
-> Tested / developed on unity 2017.3 and contains assembly definition for compiling to separate assembly file for performance reason.
+> Tested on unity 2017.4 (dependent on Unity engine) and contains assembly definition for compiling to separate assembly file for performance reason.
 
 > Dependent on [ECS framework](https://github.com/Leopotam/ecs) - ECS framework should be imported to unity project first.
 
