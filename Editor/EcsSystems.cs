@@ -19,11 +19,10 @@ namespace LeopotamGroup.Ecs.UnityIntegration.Editor {
         static readonly List<IEcsRunSystem> _runList = new List<IEcsRunSystem> ();
 
         public override void OnInspectorGUI () {
+            var savedState = GUI.enabled;
+            GUI.enabled = true;
             var observer = target as EcsSystemsObserver;
             var systems = observer.GetSystems ();
-            var guiEnabled = GUI.enabled;
-            GUI.enabled = true;
-            systems.IsRunActive = EditorGUILayout.Toggle ("Run systems activated", systems.IsRunActive);
 
             systems.GetPreInitSystems (_preInitList);
             if (_preInitList.Count > 0) {
@@ -51,22 +50,23 @@ namespace LeopotamGroup.Ecs.UnityIntegration.Editor {
                 _initList.Clear ();
             }
 
-            if (!systems.IsRunActive) {
-                GUI.enabled = false;
-            }
             systems.GetRunSystems (_runList);
             if (_runList.Count > 0) {
                 GUILayout.BeginVertical (GUI.skin.box);
                 EditorGUILayout.LabelField ("Run systems", EditorStyles.boldLabel);
                 EditorGUI.indentLevel++;
-                foreach (var system in _runList) {
-                    EditorGUILayout.LabelField (system.GetType ().Name);
+                for (var i = 0; i < _runList.Count; i++) {
+                    if (systems.DisabledInDebugSystems != null) {
+                        systems.DisabledInDebugSystems[i] = !EditorGUILayout.Toggle (_runList[i].GetType ().Name, !systems.DisabledInDebugSystems[i]);
+                    } else {
+                        EditorGUILayout.LabelField (_runList[i].GetType ().Name);
+                    }
                 }
                 EditorGUI.indentLevel--;
                 GUILayout.EndVertical ();
                 _runList.Clear ();
             }
-            GUI.enabled = guiEnabled;
+            GUI.enabled = savedState;
         }
     }
 }
