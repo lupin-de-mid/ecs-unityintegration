@@ -9,7 +9,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace LeopotamGroup.Ecs.UnityIntegration.Editor.Inspectors {
+namespace Leopotam.Ecs.UnityIntegration.Editor.Inspectors {
     sealed class QuaternionInspector : IEcsComponentInspector {
         Type IEcsComponentInspector.GetFieldType () {
             return typeof (Quaternion);

@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LeopotamGroup.Ecs.UnityIntegration {
+namespace Leopotam.Ecs.UnityIntegration {
     /// <summary>
     /// Spawns prefab from Resources folder with pooling support.
     /// </summary>

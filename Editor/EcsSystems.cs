@@ -8,7 +8,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace LeopotamGroup.Ecs.UnityIntegration.Editor {
+namespace Leopotam.Ecs.UnityIntegration.Editor {
     [CustomEditor (typeof (EcsSystemsObserver))]
     sealed class EcsSystemsObserverInspector : UnityEditor.Editor {
         static IEcsInitSystem[] _initList = new IEcsInitSystem[32];

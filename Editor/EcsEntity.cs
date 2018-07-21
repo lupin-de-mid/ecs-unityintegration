@@ -11,7 +11,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace LeopotamGroup.Ecs.UnityIntegration.Editor {
+namespace Leopotam.Ecs.UnityIntegration.Editor {
     [CustomEditor (typeof (EcsEntityObserver))]
     sealed class EcsEntityObserverInspector : UnityEditor.Editor {
         static object[] _componentsCache = new object[32];
