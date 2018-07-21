@@ -11,7 +11,7 @@
 
 ## EcsWorld observer
 Integration can be processed with one call of `LeopotamGroup.Ecs.UnityIntegration.EcsWorldObserver.Create()` metod - this call should be wrapped to `#if UNITY_EDITOR` preprocessor define:
-```
+```csharp
 public class Startup : MonoBehaviour {
     EcsSystems _systems;
 
@@ -33,7 +33,7 @@ Observer **must** be created before any entity will be created in ecs-world.
 
 ## EcsSystems observer
 Integration can be processed with one call of `LeopotamGroup.Ecs.UnityIntegration.EcsSystemsObserver.Create()` metod - this call should be wrapped to `#if UNITY_EDITOR` preprocessor define:
-```
+```csharp
 public class Startup : MonoBehaviour {
     EcsSystems _systems;
 
@@ -57,7 +57,7 @@ public class Startup : MonoBehaviour {
 # Runtime integration
 ## UnityPrefabComponent
 Supports spawning instances of prefab from `Resources` folder. Instead of removing instance will be placed in pool for reuse it in next time:
-```
+```csharp
 // Path to prefab inside Resources folder.
 const string PrefabPath = "Test/Cube";
 ...
@@ -83,7 +83,7 @@ By design, observer works as readonly copy of ecs world data - you can copy valu
 
 ### I want to create custom inspector view for my component.
 Custom component `MyComponent1`:
-```
+```csharp
 public enum MyEnum { True, False }
 
 public class MyComponent1 {
@@ -92,7 +92,7 @@ public class MyComponent1 {
 }
 ```
 Inspector for `MyComponent1` (should be placed in `Editor` folder):
-```
+```csharp
 class MyComponent1Inspector : IEcsComponentInspector {
     Type IEcsComponentInspector.GetFieldType () {
         return typeof (MyComponent1);
