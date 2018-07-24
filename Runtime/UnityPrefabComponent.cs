@@ -90,7 +90,6 @@ namespace Leopotam.Ecs.UnityIntegration {
                     list.Instances[i] = null;
                 }
                 list.Count = 0;
-                UnityEngine.Object.Destroy (list.Prefab);
                 list.Prefab = null;
                 _prefabPools.Remove (prefabPath);
             }
