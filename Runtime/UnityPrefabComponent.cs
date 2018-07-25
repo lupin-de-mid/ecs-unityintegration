@@ -16,9 +16,9 @@ namespace Leopotam.Ecs.UnityIntegration {
     public sealed class UnityPrefabComponent {
         public GameObject Prefab;
 
-        static Dictionary<string, PrefabList> _prefabPools = new Dictionary<string, PrefabList> (16);
-
         string _path;
+
+        static Dictionary<string, PrefabList> _prefabPools = new Dictionary<string, PrefabList> (16);
 
         /// <summary>
         /// Spawns prefab from specified path and assign to Prefab field.
@@ -75,6 +75,7 @@ namespace Leopotam.Ecs.UnityIntegration {
                     list.Instances[list.Count++] = Prefab;
                 }
                 Prefab = null;
+                _path = null;
             }
         }
 
