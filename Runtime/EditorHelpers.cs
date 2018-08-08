@@ -108,6 +108,13 @@ namespace Leopotam.Ecs.UnityIntegration {
             UpdateEntityName (entity);
         }
 
+        void IEcsWorldDebugListener.OnWorldDestroyed (EcsWorld world) {
+            // for immediate unregistering this MonoBehaviour from ECS.
+            OnDestroy ();
+            // for delayed destroying GameObject.
+            Destroy (gameObject);
+        }
+
         void UpdateEntityName (int entity) {
             var entityName = entity.ToString ("D8");
             var count = _world.GetComponents (entity, ref _componentsCache);
