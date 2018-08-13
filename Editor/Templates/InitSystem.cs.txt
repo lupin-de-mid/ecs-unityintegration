@@ -1,6 +1,6 @@
 ﻿using Leopotam.Ecs;
 
-namespace Client {
+namespace #NS# {
     sealed class #SCRIPTNAME# : IEcsInitSystem {
         void IEcsInitSystem.Initialize () {
             // Add your initialize code here.

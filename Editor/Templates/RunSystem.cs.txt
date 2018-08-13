@@ -1,6 +1,6 @@
 ﻿using Leopotam.Ecs;
 
-namespace Client {
+namespace #NS# {
     sealed class #SCRIPTNAME# : IEcsRunSystem {
         void IEcsRunSystem.Run () {
             // Add your run code here.

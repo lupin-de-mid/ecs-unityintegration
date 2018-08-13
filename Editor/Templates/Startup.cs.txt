@@ -1,7 +1,7 @@
 ﻿using Leopotam.Ecs;
 using UnityEngine;
 
-namespace Client {
+namespace #NS# {
     sealed class #SCRIPTNAME# : MonoBehaviour {
         EcsWorld _world;
         EcsSystems _systems;

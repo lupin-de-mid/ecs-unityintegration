@@ -5,6 +5,9 @@ using UnityEditor.ProjectWindowCallback;
 using UnityEngine;
 
 namespace Leopotam.Ecs.UnityIntegration.Editor.Prototypes {
+    /// <summary>
+    /// Generates templates of ecs user classes.
+    /// </summary>
     sealed class TemplateGenerator : ScriptableObject {
         const string Title = "LeoECS template generator";
 
@@ -12,49 +15,36 @@ namespace Leopotam.Ecs.UnityIntegration.Editor.Prototypes {
         const string InitSystemTemplate = "InitSystem.cs.txt";
         const string RunSystemTemplate = "RunSystem.cs.txt";
 
-        static string GetProtoContent (string proto) {
-            var pathHelper = ScriptableObject.CreateInstance<TemplateGenerator> ();
-            var path = Path.GetDirectoryName (AssetDatabase.GetAssetPath (MonoScript.FromScriptableObject (pathHelper)));
-            UnityEngine.Object.DestroyImmediate (pathHelper);
-            try {
-                return File.ReadAllText (Path.Combine (path, proto));
-            } catch {
-                return null;
-            }
-        }
-
         [MenuItem ("Assets/Create/LeoECS/Create Startup template", false, 10)]
-        static void CreateStartupProto () {
+        static void CreateStartupTpl () {
             CreateAndRenameAsset (
                 string.Format ("{0}/EcsStartup.cs", GetAssetPath ()),
-                GetIcon (), name => CreateProto (GetProtoContent (StartupTemplate), name));
+                GetIcon (), name => CreateTemplateInternal (GetTemplateContent (StartupTemplate), name));
         }
 
         [MenuItem ("Assets/Create/LeoECS/Create InitSystem template", false, 11)]
-        static void CreateInitSystemProto () {
+        static void CreateInitSystemTpl () {
             CreateAndRenameAsset (
                 string.Format ("{0}/EcsInitSystem.cs", GetAssetPath ()),
-                GetIcon (), name => CreateProto (GetProtoContent (InitSystemTemplate), name));
+                GetIcon (), name => CreateTemplateInternal (GetTemplateContent (InitSystemTemplate), name));
         }
 
         [MenuItem ("Assets/Create/LeoECS/Create RunSystem template", false, 12)]
-        static void CreateRunSystemProto () {
+        static void CreateRunSystemTpl () {
             CreateAndRenameAsset (
                 string.Format ("{0}/EcsRunSystem.cs", GetAssetPath ()),
-                GetIcon (), name => CreateProto (GetProtoContent (RunSystemTemplate), name));
+                GetIcon (), name => CreateTemplateInternal (GetTemplateContent (RunSystemTemplate), name));
         }
 
-        static void CreateProto (string proto, string fileName) {
-            var res = CreatePrototype (proto, fileName);
-            if (res != null) {
-                EditorUtility.DisplayDialog (Title, res, "Close");
-            }
-        }
-
-        public static string CreatePrototype (string proto, string fileName) {
+        public static string CreateTemplate (string proto, string fileName) {
             if (string.IsNullOrEmpty (fileName)) {
                 return "Invalid filename";
             }
+            var ns = EditorSettings.projectGenerationRootNamespace;
+            if (string.IsNullOrWhiteSpace (EditorSettings.projectGenerationRootNamespace)) {
+                ns = "Client";
+            }
+            proto = proto.Replace ("#NS#", ns);
             proto = proto.Replace ("#SCRIPTNAME#", Path.GetFileNameWithoutExtension (fileName));
             try {
                 File.WriteAllText (AssetDatabase.GenerateUniqueAssetPath (fileName), proto);
@@ -63,6 +53,25 @@ namespace Leopotam.Ecs.UnityIntegration.Editor.Prototypes {
             }
             AssetDatabase.Refresh ();
             return null;
+        }
+
+        static void CreateTemplateInternal (string proto, string fileName) {
+            var res = CreateTemplate (proto, fileName);
+            if (res != null) {
+                EditorUtility.DisplayDialog (Title, res, "Close");
+            }
+        }
+
+        static string GetTemplateContent (string proto) {
+            // hack: its only one way to get current editor script path. :(
+            var pathHelper = ScriptableObject.CreateInstance<TemplateGenerator> ();
+            var path = Path.GetDirectoryName (AssetDatabase.GetAssetPath (MonoScript.FromScriptableObject (pathHelper)));
+            UnityEngine.Object.DestroyImmediate (pathHelper);
+            try {
+                return File.ReadAllText (Path.Combine (path, proto));
+            } catch {
+                return null;
+            }
         }
 
         static string GetAssetPath () {
