@@ -1,0 +1,11 @@
+﻿using Leopotam.Ecs;
+
+namespace Client {
+    sealed class #SCRIPTNAME# : IEcsInitSystem {
+        void IEcsInitSystem.Initialize () {
+            // Add your initialize code here.
+        }
+
+        void IEcsInitSystem.Destroy () { }
+    }
+}
