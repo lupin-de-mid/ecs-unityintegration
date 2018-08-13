@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using UnityEditor;
 using UnityEditor.ProjectWindowCallback;
 using UnityEngine;
@@ -40,12 +41,12 @@ namespace Leopotam.Ecs.UnityIntegration.Editor.Prototypes {
             if (string.IsNullOrEmpty (fileName)) {
                 return "Invalid filename";
             }
-            var ns = EditorSettings.projectGenerationRootNamespace;
+            var ns = EditorSettings.projectGenerationRootNamespace.Trim ();
             if (string.IsNullOrEmpty (EditorSettings.projectGenerationRootNamespace)) {
                 ns = "Client";
             }
             proto = proto.Replace ("#NS#", ns);
-            proto = proto.Replace ("#SCRIPTNAME#", Path.GetFileNameWithoutExtension (fileName));
+            proto = proto.Replace ("#SCRIPTNAME#", SanitizeClassName (Path.GetFileNameWithoutExtension (fileName)));
             try {
                 File.WriteAllText (AssetDatabase.GenerateUniqueAssetPath (fileName), proto);
             } catch (Exception ex) {
@@ -53,6 +54,20 @@ namespace Leopotam.Ecs.UnityIntegration.Editor.Prototypes {
             }
             AssetDatabase.Refresh ();
             return null;
+        }
+
+        static string SanitizeClassName (string className) {
+            var sb = new StringBuilder ();
+            var needUp = true;
+            foreach (var c in className) {
+                if (char.IsLetterOrDigit (c)) {
+                    sb.Append (needUp ? char.ToUpperInvariant (c) : c);
+                    needUp = false;
+                } else {
+                    needUp = true;
+                }
+            }
+            return sb.ToString ();
         }
 
         static void CreateTemplateInternal (string proto, string fileName) {
