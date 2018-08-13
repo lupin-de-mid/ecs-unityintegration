@@ -41,7 +41,7 @@ namespace Leopotam.Ecs.UnityIntegration.Editor.Prototypes {
                 return "Invalid filename";
             }
             var ns = EditorSettings.projectGenerationRootNamespace;
-            if (string.IsNullOrWhiteSpace (EditorSettings.projectGenerationRootNamespace)) {
+            if (string.IsNullOrEmpty (EditorSettings.projectGenerationRootNamespace)) {
                 ns = "Client";
             }
             proto = proto.Replace ("#NS#", ns);
