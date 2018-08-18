@@ -76,7 +76,7 @@ class MyComponent1Inspector : IEcsComponentInspector {
         return typeof (MyComponent1);
     }
 
-    void IEcsComponentInspector.OnGUI (string label, object value) {
+    void IEcsComponentInspector.OnGUI (string label, object value, EcsWorld world, int entityId) {
         var component = value as MyComponent1;
         EditorGUILayout.LabelField (label, EditorStyles.boldLabel);
         EditorGUI.indentLevel++;

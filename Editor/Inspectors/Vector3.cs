@@ -15,7 +15,7 @@ namespace Leopotam.Ecs.UnityIntegration.Editor.Inspectors {
             return typeof (Vector3);
         }
 
-        void IEcsComponentInspector.OnGUI (string label, object value) {
+        void IEcsComponentInspector.OnGUI (string label, object value, EcsWorld world, int entityId) {
             EditorGUILayout.Vector3Field (label, (Vector3) value);
         }
     }
