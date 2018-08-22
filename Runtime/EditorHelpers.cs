@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LeopotamGroup.Ecs.UnityIntegration {
+namespace Leopotam.Ecs.UnityIntegration {
     public sealed class EcsEntityObserver : MonoBehaviour {
         public EcsWorld World;
 
@@ -57,7 +57,7 @@ namespace LeopotamGroup.Ecs.UnityIntegration {
 
         readonly Dictionary<int, GameObject> _entities = new Dictionary<int, GameObject> (1024);
 
-        static readonly List<object> _componentsCache = new List<object> (6);
+        static object[] _componentsCache = new object[32];
 
         public static GameObject Create (EcsWorld world, string name = null) {
             if (world == null) {
@@ -108,14 +108,19 @@ namespace LeopotamGroup.Ecs.UnityIntegration {
             UpdateEntityName (entity);
         }
 
+        void IEcsWorldDebugListener.OnWorldDestroyed (EcsWorld world) {
+            // for immediate unregistering this MonoBehaviour from ECS.
+            OnDestroy ();
+            // for delayed destroying GameObject.
+            Destroy (gameObject);
+        }
+
         void UpdateEntityName (int entity) {
-            _world.GetComponents (entity, _componentsCache);
             var entityName = entity.ToString ("D8");
-            if (_componentsCache.Count > 0) {
-                foreach (var component in _componentsCache) {
-                    entityName = string.Format ("{0}:{1}", entityName, component.GetType ().Name);
-                }
-                _componentsCache.Clear ();
+            var count = _world.GetComponents (entity, ref _componentsCache);
+            for (var i = 0; i < count; i++) {
+                entityName = string.Format ("{0}:{1}", entityName, _componentsCache[i].GetType ().Name);
+                _componentsCache[i] = null;
             }
             _entities[entity].name = entityName;
         }
