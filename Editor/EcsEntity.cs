@@ -43,8 +43,9 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
                 _componentsCache[i] = null;
                 var type = component.GetType ();
                 GUILayout.BeginVertical (GUI.skin.box);
-                if (!EcsComponentInspectors.Render (type.Name, type, component, _entity)) {
-                    EditorGUILayout.LabelField (type.Name, EditorStyles.boldLabel);
+                var typeName = EditorHelpers.GetCleanGenericTypeName (type);
+                if (!EcsComponentInspectors.Render (typeName, type, component, _entity)) {
+                    EditorGUILayout.LabelField (typeName, EditorStyles.boldLabel);
                     var indent = EditorGUI.indentLevel;
                     EditorGUI.indentLevel++;
                     foreach (var field in type.GetFields (BindingFlags.Instance | BindingFlags.Public)) {

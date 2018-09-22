@@ -11,6 +11,19 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Leopotam.Ecs.UnityIntegration {
+    public static class EditorHelpers {
+        public static string GetCleanGenericTypeName (Type type) {
+            if (!type.IsGenericType) {
+                return type.Name;
+            }
+            var constraints = "";
+            foreach (var constr in type.GetGenericArguments ()) {
+                constraints += constraints.Length > 0 ? string.Format (", {0}", GetCleanGenericTypeName (constr)) : constr.Name;
+            }
+            return string.Format ("{0}<{1}>", type.Name.Substring (0, type.Name.LastIndexOf ("`")), constraints);
+        }
+    }
+
     public sealed class EcsEntityObserver : MonoBehaviour {
         public EcsWorld World;
 
@@ -119,7 +132,7 @@ namespace Leopotam.Ecs.UnityIntegration {
             var entityName = entity.ToString ("D8");
             var count = _world.GetComponents (entity, ref _componentsCache);
             for (var i = 0; i < count; i++) {
-                entityName = string.Format ("{0}:{1}", entityName, _componentsCache[i].GetType ().Name);
+                entityName = string.Format ("{0}:{1}", entityName, EditorHelpers.GetCleanGenericTypeName (_componentsCache[i].GetType ()));
                 _componentsCache[i] = null;
             }
             _entities[entity].name = entityName;
