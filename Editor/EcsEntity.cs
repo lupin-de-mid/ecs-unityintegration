@@ -14,6 +14,8 @@ using UnityEngine;
 namespace Leopotam.Ecs.UnityIntegration.Editor {
     [CustomEditor (typeof (EcsEntityObserver))]
     sealed class EcsEntityObserverInspector : UnityEditor.Editor {
+        const int MaxFieldToStringLength = 512;
+
         static object[] _componentsCache = new object[32];
 
         EcsEntityObserver _entity;
@@ -73,6 +75,9 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
                     return;
                 }
                 var strVal = fieldValue != null ? string.Format (System.Globalization.CultureInfo.InvariantCulture, "{0}", fieldValue) : "null";
+                if (strVal.Length > MaxFieldToStringLength) {
+                    strVal = strVal.Substring (0, MaxFieldToStringLength);
+                }
                 GUILayout.BeginHorizontal ();
                 EditorGUILayout.LabelField (field.Name, GUILayout.MaxWidth (EditorGUIUtility.labelWidth - 16));
                 EditorGUILayout.SelectableLabel (strVal, GUILayout.MaxHeight (EditorGUIUtility.singleLineHeight));
