@@ -17,6 +17,7 @@ namespace Leopotam.Ecs.UnityIntegration.Editor.Prototypes {
         const string RunSystemTemplate = "RunSystem.cs.txt";
         const string ComponentTemplate = "Component.cs.txt";
         const string ComponentFlagTemplate = "ComponentFlag.cs.txt";
+        const string ComponentOneFrameTemplate = "ComponentOneFrame.cs.txt";
 
         [MenuItem ("Assets/Create/LeoECS/Create Startup template", false, 10)]
         static void CreateStartupTpl () {
@@ -51,6 +52,13 @@ namespace Leopotam.Ecs.UnityIntegration.Editor.Prototypes {
             CreateAndRenameAsset (
                 string.Format ("{0}/EcsComponentFlag.cs", GetAssetPath ()),
                 GetIcon (), name => CreateTemplateInternal (GetTemplateContent (ComponentFlagTemplate), name));
+        }
+
+        [MenuItem ("Assets/Create/LeoECS/Components/Create OneFrame Component template", false, 14)]
+        static void CreateOneFrameComponentTpl () {
+            CreateAndRenameAsset (
+                string.Format ("{0}/EcsOneFrameComponent.cs", GetAssetPath ()),
+                GetIcon (), name => CreateTemplateInternal (GetTemplateContent (ComponentOneFrameTemplate), name));
         }
 
         public static string CreateTemplate (string proto, string fileName) {
