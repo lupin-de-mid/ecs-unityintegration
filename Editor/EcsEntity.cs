@@ -14,7 +14,7 @@ using UnityEngine;
 namespace Leopotam.Ecs.UnityIntegration.Editor {
     [CustomEditor (typeof (EcsEntityObserver))]
     sealed class EcsEntityObserverInspector : UnityEditor.Editor {
-        const int MaxFieldToStringLength = 512;
+        const int MaxFieldToStringLength = 128;
 
         static object[] _componentsCache = new object[32];
 
