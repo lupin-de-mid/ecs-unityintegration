@@ -13,6 +13,8 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
     [CustomEditor (typeof (EcsSystemsObserver))]
     sealed class EcsSystemsObserverInspector : UnityEditor.Editor {
         static IEcsPreInitSystem[] _preInitList = new IEcsPreInitSystem[32];
+        static Stack<IEcsInitSystem[]> _initList = new Stack<IEcsInitSystem[]> (8);
+        static Stack<IEcsRunSystem[]> _runList = new Stack<IEcsRunSystem[]> (8);
 
         public override void OnInspectorGUI () {
             var savedState = GUI.enabled;
@@ -52,42 +54,52 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
 
         void OnInitSystemsGUI (EcsSystems systems) {
             IEcsInitSystem[] initList = null;
-            var count = systems.GetInitSystems (ref initList);
-            if (count <= 0) return;
-            EditorGUI.indentLevel++;
-            for (var i = 0; i < count; i++) {
-                EditorGUILayout.LabelField (initList[i].GetType ().Name);
-                var asSystems = initList[i] as EcsSystems;
-                if (asSystems != null) {
-                    OnInitSystemsGUI (asSystems);
-                }
-                initList[i] = null;
+            if (_initList.Count != 0) {
+                initList = _initList.Pop ();
             }
-            EditorGUI.indentLevel--;
+            var count = systems.GetInitSystems (ref initList);
+            if (count > 0) {
+                EditorGUI.indentLevel++;
+                for (var i = 0; i < count; i++) {
+                    EditorGUILayout.LabelField (initList[i].GetType ().Name);
+                    var asSystems = initList[i] as EcsSystems;
+                    if (asSystems != null) {
+                        OnInitSystemsGUI (asSystems);
+                    }
+                    initList[i] = null;
+                }
+                EditorGUI.indentLevel--;
+            }
+            _initList.Push (initList);
         }
 
         void OnRunSystemsGUI (EcsSystems systems) {
             IEcsRunSystem[] runList = null;
-            var count = systems.GetRunSystems (ref runList);
-            if (count <= 0) return;
-            EditorGUI.indentLevel++;
-            for (var i = 0; i < count; i++) {
-                bool enabled = true;
-                if (systems.DisabledInDebugSystems != null) {
-                    systems.DisabledInDebugSystems[i] = !EditorGUILayout.Toggle (runList[i].GetType ().Name, !systems.DisabledInDebugSystems[i]);
-                    enabled = !systems.DisabledInDebugSystems[i];
-                } else {
-                    EditorGUILayout.LabelField (runList[i].GetType ().Name);
-                }
-                if (enabled) {
-                    var asSystems = runList[i] as EcsSystems;
-                    if (asSystems != null) {
-                        OnRunSystemsGUI (asSystems);
-                    }
-                }
-                runList[i] = null;
+            if (_runList.Count != 0) {
+                runList = _runList.Pop ();
             }
-            EditorGUI.indentLevel--;
+            var count = systems.GetRunSystems (ref runList);
+            if (count > 0) {
+                EditorGUI.indentLevel++;
+                for (var i = 0; i < count; i++) {
+                    bool enabled = true;
+                    if (systems.DisabledInDebugSystems != null) {
+                        systems.DisabledInDebugSystems[i] = !EditorGUILayout.Toggle (runList[i].GetType ().Name, !systems.DisabledInDebugSystems[i]);
+                        enabled = !systems.DisabledInDebugSystems[i];
+                    } else {
+                        EditorGUILayout.LabelField (runList[i].GetType ().Name);
+                    }
+                    if (enabled) {
+                        var asSystems = runList[i] as EcsSystems;
+                        if (asSystems != null) {
+                            OnRunSystemsGUI (asSystems);
+                        }
+                    }
+                    runList[i] = null;
+                }
+                EditorGUI.indentLevel--;
+            }
+            _runList.Push (runList);
         }
     }
 }
