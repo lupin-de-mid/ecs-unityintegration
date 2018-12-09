@@ -36,19 +36,16 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
                 GUILayout.EndVertical ();
             }
 
-            {
-                GUILayout.BeginVertical (GUI.skin.box);
-                EditorGUILayout.LabelField ("Initialize systems", EditorStyles.boldLabel);
-                OnInitSystemsGUI (systems);
-                GUILayout.EndVertical ();
-            }
+            GUILayout.BeginVertical (GUI.skin.box);
+            EditorGUILayout.LabelField ("Initialize systems", EditorStyles.boldLabel);
+            OnInitSystemsGUI (systems);
+            GUILayout.EndVertical ();
 
-            {
-                GUILayout.BeginVertical (GUI.skin.box);
-                EditorGUILayout.LabelField ("Run systems", EditorStyles.boldLabel);
-                OnRunSystemsGUI (systems);
-                GUILayout.EndVertical ();
-            }
+            GUILayout.BeginVertical (GUI.skin.box);
+            EditorGUILayout.LabelField ("Run systems", EditorStyles.boldLabel);
+            OnRunSystemsGUI (systems);
+            GUILayout.EndVertical ();
+
             GUI.enabled = savedState;
         }
 
