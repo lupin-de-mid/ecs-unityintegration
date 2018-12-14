@@ -1,0 +1,22 @@
+{
+    "name": "com.leopotam.ecs-unityintegration",
+    "author": "Leopotam",
+    "displayName": "LeoECS Unity Integration",
+    "description": "UnityEditor integration for LeoECS Entity Component System framework.",
+    "unity": "2018.3",
+    "version": "2018.12.22-preview",
+    "keywords": [
+        "leoecs",
+        "ecs",
+        "performance",
+        "unity",
+        "integration"
+    ],
+    "dependencies": {
+        "com.leopotam.ecs": "https://github.com/Leopotam/ecs-unityintegration.git#develop"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Leopotam/ecs-unityintegration.git"
+    }
+}
