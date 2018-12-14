@@ -12,9 +12,7 @@
         "unity",
         "integration"
     ],
-    "dependencies": {
-        "com.leopotam.ecs": "https://github.com/Leopotam/ecs-unityintegration.git#develop"
-    },
+    "dependencies": {},
     "repository": {
         "type": "git",
         "url": "https://github.com/Leopotam/ecs-unityintegration.git"
