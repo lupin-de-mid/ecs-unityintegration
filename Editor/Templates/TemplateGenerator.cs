@@ -1,4 +1,11 @@
-﻿using System;
+﻿// ----------------------------------------------------------------------------
+// The MIT License
+// Unity integration https://github.com/Leopotam/ecs-unityintegration
+// for ECS framework https://github.com/Leopotam/ecs
+// Copyright (c) 2017-2018 Leopotam <leopotam@gmail.com>
+// ----------------------------------------------------------------------------
+
+using System;
 using System.IO;
 using System.Text;
 using UnityEditor;
