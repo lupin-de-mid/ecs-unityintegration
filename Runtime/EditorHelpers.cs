@@ -96,7 +96,7 @@ namespace Leopotam.Ecs.UnityIntegration {
                 unityEntity.World = _world;
                 unityEntity.Id = entity;
                 _entities[entity] = go;
-                UpdateEntityName (entity);
+                UpdateEntityName (entity, false);
             }
             go.SetActive (true);
         }
@@ -106,16 +106,16 @@ namespace Leopotam.Ecs.UnityIntegration {
             if (!_entities.TryGetValue (entity, out go)) {
                 throw new Exception ("Unity visualization not exists, looks like a bug");
             }
-            UpdateEntityName (entity);
+            UpdateEntityName (entity, false);
             go.SetActive (false);
         }
 
         void IEcsWorldDebugListener.OnComponentAdded (int entity, object component) {
-            UpdateEntityName (entity);
+            UpdateEntityName (entity, true);
         }
 
         void IEcsWorldDebugListener.OnComponentRemoved (int entity, object component) {
-            UpdateEntityName (entity);
+            UpdateEntityName (entity, true);
         }
 
         void IEcsWorldDebugListener.OnWorldDestroyed (EcsWorld world) {
@@ -125,12 +125,14 @@ namespace Leopotam.Ecs.UnityIntegration {
             Destroy (gameObject);
         }
 
-        void UpdateEntityName (int entity) {
+        void UpdateEntityName (int entity, bool requestComponents) {
             var entityName = entity.ToString ("D8");
-            var count = _world.GetComponents (entity, ref _componentsCache);
-            for (var i = 0; i < count; i++) {
-                entityName = string.Format ("{0}:{1}", entityName, EditorHelpers.GetCleanGenericTypeName (_componentsCache[i].GetType ()));
-                _componentsCache[i] = null;
+            if (requestComponents) {
+                var count = _world.GetComponents (entity, ref _componentsCache);
+                for (var i = 0; i < count; i++) {
+                    entityName = string.Format ("{0}:{1}", entityName, EditorHelpers.GetCleanGenericTypeName (_componentsCache[i].GetType ()));
+                    _componentsCache[i] = null;
+                }
             }
             _entities[entity].name = entityName;
         }
