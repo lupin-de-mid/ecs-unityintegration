@@ -145,4 +145,9 @@ namespace Leopotam.Ecs.UnityIntegration {
         }
     }
 }
+
+#if !NET_4_6 && !NET_STANDARD_2_0
+#warning [Leopotam.Ecs.UnityIntegration] .Net Framework v3.5 support deprecated and will be removed in next release.
+#endif
+
 #endif
