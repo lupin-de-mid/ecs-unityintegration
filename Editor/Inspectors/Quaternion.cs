@@ -15,7 +15,7 @@ namespace Leopotam.Ecs.UnityIntegration.Editor.Inspectors {
             return typeof (Quaternion);
         }
 
-        void IEcsComponentInspector.OnGUI (string label, object value, EcsWorld world, int entityId) {
+        void IEcsComponentInspector.OnGUI (string label, object value, EcsWorld world, in EcsEntity entityId) {
             EditorGUILayout.Vector3Field (label, ((Quaternion) value).eulerAngles);
         }
     }

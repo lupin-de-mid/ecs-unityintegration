@@ -18,10 +18,10 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
 
         static object[] _componentsCache = new object[32];
 
-        EcsEntityObserver _entity;
+        EcsEntityObserver _observer;
 
         public override void OnInspectorGUI () {
-            if (_entity.World != null) {
+            if (_observer.World != null) {
                 var guiEnabled = GUI.enabled;
                 GUI.enabled = true;
                 DrawComponents ();
@@ -31,32 +31,34 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
         }
 
         void OnEnable () {
-            _entity = target as EcsEntityObserver;
+            _observer = target as EcsEntityObserver;
         }
 
         void OnDisable () {
-            _entity = null;
+            _observer = null;
         }
 
         void DrawComponents () {
-            var count = _entity.World.GetComponents (_entity.Id, ref _componentsCache);
-            for (var i = 0; i < count; i++) {
-                var component = _componentsCache[i];
-                _componentsCache[i] = null;
-                var type = component.GetType ();
-                GUILayout.BeginVertical (GUI.skin.box);
-                var typeName = EditorHelpers.GetCleanGenericTypeName (type);
-                if (!EcsComponentInspectors.Render (typeName, type, component, _entity)) {
-                    EditorGUILayout.LabelField (typeName, EditorStyles.boldLabel);
-                    var indent = EditorGUI.indentLevel;
-                    EditorGUI.indentLevel++;
-                    foreach (var field in type.GetFields (BindingFlags.Instance | BindingFlags.Public)) {
-                        DrawTypeField (component, field, _entity);
+            if (_observer.gameObject.activeSelf) {
+                var count = _observer.World.GetComponents (_observer.Entity, ref _componentsCache);
+                for (var i = 0; i < count; i++) {
+                    var component = _componentsCache[i];
+                    _componentsCache[i] = null;
+                    var type = component.GetType ();
+                    GUILayout.BeginVertical (GUI.skin.box);
+                    var typeName = EditorHelpers.GetCleanGenericTypeName (type);
+                    if (!EcsComponentInspectors.Render (typeName, type, component, _observer)) {
+                        EditorGUILayout.LabelField (typeName, EditorStyles.boldLabel);
+                        var indent = EditorGUI.indentLevel;
+                        EditorGUI.indentLevel++;
+                        foreach (var field in type.GetFields (BindingFlags.Instance | BindingFlags.Public)) {
+                            DrawTypeField (component, field, _observer);
+                        }
+                        EditorGUI.indentLevel = indent;
                     }
-                    EditorGUI.indentLevel = indent;
+                    GUILayout.EndVertical ();
+                    EditorGUILayout.Space ();
                 }
-                GUILayout.EndVertical ();
-                EditorGUILayout.Space ();
             }
         }
 
@@ -104,10 +106,10 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
             }
         }
 
-        public static bool Render (string label, Type type, object value, EcsEntityObserver entity) {
+        public static bool Render (string label, Type type, object value, EcsEntityObserver observer) {
             IEcsComponentInspector inspector;
             if (_inspectors.TryGetValue (type, out inspector)) {
-                inspector.OnGUI (label, value, entity.World, entity.Id);
+                inspector.OnGUI (label, value, observer.World, observer.Entity);
                 return true;
             }
             return false;
@@ -130,6 +132,6 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
         /// <param name="value">Value of field.</param>
         /// <param name="world">World instance.</param>
         /// <param name="entityId">Entity id.</param>
-        void OnGUI (string label, object value, EcsWorld world, int entityId);
+        void OnGUI (string label, object value, EcsWorld world, in EcsEntity entityId);
     }
 }
