@@ -26,7 +26,7 @@ namespace Leopotam.Ecs.UnityIntegration {
 
     public sealed class EcsEntityObserver : MonoBehaviour {
         public EcsWorld World;
-        public int Id;
+        public EcsEntity Entity;
     }
 
     public sealed class EcsSystemsObserver : MonoBehaviour, IEcsSystemsDebugListener {
@@ -86,35 +86,35 @@ namespace Leopotam.Ecs.UnityIntegration {
             return _world.GetStats ();
         }
 
-        void IEcsWorldDebugListener.OnEntityCreated (int entity) {
+        void IEcsWorldDebugListener.OnEntityCreated (in EcsEntity entity) {
             GameObject go;
-            if (!_entities.TryGetValue (entity, out go)) {
+            if (!_entities.TryGetValue (entity.GetHashCode (), out go)) {
                 go = new GameObject ();
                 go.transform.SetParent (transform, false);
                 go.hideFlags = HideFlags.NotEditable;
                 var unityEntity = go.AddComponent<EcsEntityObserver> ();
                 unityEntity.World = _world;
-                unityEntity.Id = entity;
-                _entities[entity] = go;
+                unityEntity.Entity = entity;
+                _entities[entity.GetHashCode ()] = go;
                 UpdateEntityName (entity, false);
             }
             go.SetActive (true);
         }
 
-        void IEcsWorldDebugListener.OnEntityRemoved (int entity) {
+        void IEcsWorldDebugListener.OnEntityRemoved (in EcsEntity entity) {
             GameObject go;
-            if (!_entities.TryGetValue (entity, out go)) {
+            if (!_entities.TryGetValue (entity.GetHashCode (), out go)) {
                 throw new Exception ("Unity visualization not exists, looks like a bug");
             }
             UpdateEntityName (entity, false);
             go.SetActive (false);
         }
 
-        void IEcsWorldDebugListener.OnComponentAdded (int entity, object component) {
+        void IEcsWorldDebugListener.OnComponentAdded (in EcsEntity entity, object component) {
             UpdateEntityName (entity, true);
         }
 
-        void IEcsWorldDebugListener.OnComponentRemoved (int entity, object component) {
+        void IEcsWorldDebugListener.OnComponentRemoved (in EcsEntity entity, object component) {
             UpdateEntityName (entity, true);
         }
 
@@ -125,8 +125,8 @@ namespace Leopotam.Ecs.UnityIntegration {
             Destroy (gameObject);
         }
 
-        void UpdateEntityName (int entity, bool requestComponents) {
-            var entityName = entity.ToString ("D8");
+        void UpdateEntityName (in EcsEntity entity, bool requestComponents) {
+            var entityName = entity.Id.ToString ("D8");
             if (requestComponents) {
                 var count = _world.GetComponents (entity, ref _componentsCache);
                 for (var i = 0; i < count; i++) {
@@ -134,7 +134,7 @@ namespace Leopotam.Ecs.UnityIntegration {
                     _componentsCache[i] = null;
                 }
             }
-            _entities[entity].name = entityName;
+            _entities[entity.GetHashCode ()].name = entityName;
         }
 
         void OnDestroy () {
@@ -145,9 +145,4 @@ namespace Leopotam.Ecs.UnityIntegration {
         }
     }
 }
-
-#if !NET_4_6 && !NET_STANDARD_2_0
-#warning [Leopotam.Ecs.UnityIntegration] .Net Framework v3.5 support deprecated and will be removed in next release.
-#endif
-
 #endif
