@@ -7,6 +7,21 @@
 
 > Dependent on [ECS framework](https://github.com/Leopotam/ecs) - ECS framework should be imported to unity project first.
 
+# Installation
+
+## As unity module
+This repository can be installed as unity module directly from git url. In this way new line should be added to `Packages/manifest.json`:
+```
+"com.leopotam.ecs-unityintegration": "https://github.com/Leopotam/ecs-unityintegration.git",
+```
+By default last released version will be used. If you need trunk / developing version then `develop` name of branch should be added after hash:
+```
+"com.leopotam.ecs-unityintegration": "https://github.com/Leopotam/ecs-unityintegration.git#develop",
+```
+
+## As source
+If you can't / don't want to use unity modules, code can be downloaded as sources archive of required release from [Releases page](`https://github.com/Leopotam/ecs-unityintegration/releases`).
+
 # Editor integration
 
 ## EcsWorld observer
