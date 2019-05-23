@@ -88,14 +88,14 @@ namespace Leopotam.Ecs.UnityIntegration {
 
         void IEcsWorldDebugListener.OnEntityCreated (in EcsEntity entity) {
             GameObject go;
-            if (!_entities.TryGetValue (entity.GetHashCode (), out go)) {
+            if (!_entities.TryGetValue (entity.GetDebugId (), out go)) {
                 go = new GameObject ();
                 go.transform.SetParent (transform, false);
                 go.hideFlags = HideFlags.NotEditable;
                 var unityEntity = go.AddComponent<EcsEntityObserver> ();
                 unityEntity.World = _world;
                 unityEntity.Entity = entity;
-                _entities[entity.GetHashCode ()] = go;
+                _entities[entity.GetDebugId ()] = go;
                 UpdateEntityName (entity, false);
             }
             go.SetActive (true);
@@ -103,7 +103,7 @@ namespace Leopotam.Ecs.UnityIntegration {
 
         void IEcsWorldDebugListener.OnEntityRemoved (in EcsEntity entity) {
             GameObject go;
-            if (!_entities.TryGetValue (entity.GetHashCode (), out go)) {
+            if (!_entities.TryGetValue (entity.GetDebugId (), out go)) {
                 throw new Exception ("Unity visualization not exists, looks like a bug");
             }
             UpdateEntityName (entity, false);
@@ -126,7 +126,7 @@ namespace Leopotam.Ecs.UnityIntegration {
         }
 
         void UpdateEntityName (in EcsEntity entity, bool requestComponents) {
-            var entityName = entity.Id.ToString ("D8");
+            var entityName = entity.GetDebugId ().ToString ("D8");
             if (requestComponents) {
                 var count = _world.GetComponents (entity, ref _componentsCache);
                 for (var i = 0; i < count; i++) {
@@ -134,7 +134,7 @@ namespace Leopotam.Ecs.UnityIntegration {
                     _componentsCache[i] = null;
                 }
             }
-            _entities[entity.GetHashCode ()].name = entityName;
+            _entities[entity.GetDebugId ()].name = entityName;
         }
 
         void OnDestroy () {
