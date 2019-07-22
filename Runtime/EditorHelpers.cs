@@ -97,6 +97,9 @@ namespace Leopotam.Ecs.UnityIntegration {
                 unityEntity.Entity = entity;
                 _entities[entity.GetDebugId ()] = go;
                 UpdateEntityName (entity, false);
+            } else {
+                // need to update cached entity generation.
+                go.GetComponent<EcsEntityObserver> ().Entity = entity;
             }
             go.SetActive (true);
         }
