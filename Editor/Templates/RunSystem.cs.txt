@@ -1,7 +1,6 @@
 ﻿using Leopotam.Ecs;
 
 namespace #NS# {
-    [EcsInject]
     sealed class #SCRIPTNAME# : IEcsRunSystem {
         // Auto-injected fields.
         readonly EcsWorld _world = null;
