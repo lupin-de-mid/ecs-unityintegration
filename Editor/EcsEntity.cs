@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // The MIT License
 // Unity integration https://github.com/Leopotam/ecs-unityintegration
 // for ECS framework https://github.com/Leopotam/ecs
@@ -40,7 +40,7 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
 
         void DrawComponents () {
             if (_observer.gameObject.activeSelf) {
-                var count = _observer.World.GetComponents (_observer.Entity, ref _componentsCache);
+                var count = _observer.Entity.IsAlive () ? _observer.Entity.GetComponents (ref _componentsCache) : 0;
                 for (var i = 0; i < count; i++) {
                     var component = _componentsCache[i];
                     _componentsCache[i] = null;
