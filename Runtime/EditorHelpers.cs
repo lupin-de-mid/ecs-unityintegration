@@ -83,7 +83,6 @@ namespace Leopotam.Ecs.UnityIntegration {
         }
 
         void IEcsWorldDebugListener.OnEntityCreated (in EcsEntity entity) {
-            Debug.LogFormat ("entity-created {0}", entity);
             GameObject go;
             if (!_entities.TryGetValue (entity.GetInternalId (), out go)) {
                 go = new GameObject ();
@@ -102,7 +101,6 @@ namespace Leopotam.Ecs.UnityIntegration {
         }
 
         void IEcsWorldDebugListener.OnEntityDestroyed (in EcsEntity entity) {
-            Debug.LogFormat ("entity-destroyed {0}", entity);
             GameObject go;
             if (!_entities.TryGetValue (entity.GetInternalId (), out go)) {
                 throw new Exception ("Unity visualization not exists, looks like a bug");
@@ -112,17 +110,14 @@ namespace Leopotam.Ecs.UnityIntegration {
         }
 
         void IEcsWorldDebugListener.OnComponentAdded (in EcsEntity entity, object component) {
-            Debug.LogFormat ("component-added {0} / {1}", entity, component);
             UpdateEntityName (entity, true);
         }
 
         void IEcsWorldDebugListener.OnComponentRemoved (in EcsEntity entity, object component) {
-            Debug.LogFormat ("component-removed {0} / {1}", entity, component);
             UpdateEntityName (entity, true);
         }
 
         void IEcsWorldDebugListener.OnWorldDestroyed () {
-            Debug.Log ("world-destroyed");
             // for immediate unregistering this MonoBehaviour from ECS.
             OnDestroy ();
             // for delayed destroying GameObject.
