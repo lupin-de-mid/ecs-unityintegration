@@ -33,10 +33,8 @@ namespace Leopotam.Ecs.UnityIntegration {
         EcsSystems _systems;
 
         public static GameObject Create (EcsSystems systems) {
-            if (systems == null) {
-                throw new ArgumentNullException ("systems");
-            }
-            var go = new GameObject (string.Format ("[{0}]", systems.Name ?? "[ECS-SYSTEMS]"));
+            if (systems == null) { throw new ArgumentNullException ("systems"); }
+            var go = new GameObject (systems.Name != null ? string.Format ("[ECS-SYSTEMS {0}]", systems.Name) : "[ECS-SYSTEMS]");
             DontDestroyOnLoad (go);
             go.hideFlags = HideFlags.NotEditable;
             var observer = go.AddComponent<EcsSystemsObserver> ();
@@ -70,9 +68,7 @@ namespace Leopotam.Ecs.UnityIntegration {
         static object[] _componentsCache = new object[32];
 
         public static GameObject Create (EcsWorld world, string name = null) {
-            if (world == null) {
-                throw new ArgumentNullException ("world");
-            }
+            if (world == null) { throw new ArgumentNullException ("world"); }
             var go = new GameObject (name != null ? string.Format ("[ECS-WORLD {0}]", name) : "[ECS-WORLD]");
             DontDestroyOnLoad (go);
             go.hideFlags = HideFlags.NotEditable;
@@ -88,14 +84,14 @@ namespace Leopotam.Ecs.UnityIntegration {
 
         void IEcsWorldDebugListener.OnEntityCreated (in EcsEntity entity) {
             GameObject go;
-            if (!_entities.TryGetValue (entity.GetDebugId (), out go)) {
+            if (!_entities.TryGetValue (entity.GetInternalId (), out go)) {
                 go = new GameObject ();
                 go.transform.SetParent (transform, false);
                 go.hideFlags = HideFlags.NotEditable;
                 var unityEntity = go.AddComponent<EcsEntityObserver> ();
                 unityEntity.World = _world;
                 unityEntity.Entity = entity;
-                _entities[entity.GetDebugId ()] = go;
+                _entities[entity.GetInternalId ()] = go;
                 UpdateEntityName (entity, false);
             } else {
                 // need to update cached entity generation.
@@ -104,9 +100,9 @@ namespace Leopotam.Ecs.UnityIntegration {
             go.SetActive (true);
         }
 
-        void IEcsWorldDebugListener.OnEntityRemoved (in EcsEntity entity) {
+        void IEcsWorldDebugListener.OnEntityDestroyed (in EcsEntity entity) {
             GameObject go;
-            if (!_entities.TryGetValue (entity.GetDebugId (), out go)) {
+            if (!_entities.TryGetValue (entity.GetInternalId (), out go)) {
                 throw new Exception ("Unity visualization not exists, looks like a bug");
             }
             UpdateEntityName (entity, false);
@@ -121,7 +117,7 @@ namespace Leopotam.Ecs.UnityIntegration {
             UpdateEntityName (entity, true);
         }
 
-        void IEcsWorldDebugListener.OnWorldDestroyed (EcsWorld world) {
+        void IEcsWorldDebugListener.OnWorldDestroyed () {
             // for immediate unregistering this MonoBehaviour from ECS.
             OnDestroy ();
             // for delayed destroying GameObject.
@@ -129,15 +125,15 @@ namespace Leopotam.Ecs.UnityIntegration {
         }
 
         void UpdateEntityName (in EcsEntity entity, bool requestComponents) {
-            var entityName = entity.GetDebugId ().ToString ("D8");
-            if (requestComponents) {
-                var count = _world.GetComponents (entity, ref _componentsCache);
+            var entityName = entity.GetInternalId ().ToString ("D8");
+            if (entity.IsAlive () && requestComponents) {
+                var count = entity.GetComponents (ref _componentsCache);
                 for (var i = 0; i < count; i++) {
                     entityName = string.Format ("{0}:{1}", entityName, EditorHelpers.GetCleanGenericTypeName (_componentsCache[i].GetType ()));
                     _componentsCache[i] = null;
                 }
             }
-            _entities[entity.GetDebugId ()].name = entityName;
+            _entities[entity.GetInternalId ()].name = entityName;
         }
 
         void OnDestroy () {

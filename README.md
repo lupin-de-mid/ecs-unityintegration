@@ -3,7 +3,7 @@
 # Unity integration for Entity Component System framework
 [Unity integration](https://github.com/Leopotam/ecs-unityintegration) for [ECS framework](https://github.com/Leopotam/ecs).
 
-> Tested on unity 2018.3 (dependent on Unity engine) and contains assembly definition for compiling to separate assembly file for performance reason.
+> Tested on unity 2019.1 (dependent on Unity engine) and contains assembly definition for compiling to separate assembly file for performance reason.
 
 > Dependent on [ECS framework](https://github.com/Leopotam/ecs) - ECS framework should be imported to unity project first.
 
@@ -18,6 +18,22 @@ By default last released version will be used. If you need trunk / developing ve
 ```
 "com.leopotam.ecs-unityintegration": "https://github.com/Leopotam/ecs-unityintegration.git#develop",
 ```
+
+## As unity module from npm registry (Experimental)
+This repository can be installed as unity module from external npm registry with support of different versions. In this way new block should be added to `Packages/manifest.json` right after opening `{` bracket:
+```json
+  "scopedRegistries": [
+    {
+      "name": "Leopotam",
+      "url": "https://npm.leopotam.com",
+      "scopes": [
+        "com.leopotam"
+      ]
+    }
+  ],
+```
+After this operation registry can be installed from list of packages from standard unity module manager.
+> **Important!** Url can be changed later, check actual url at `README`.
 
 ## As source
 If you can't / don't want to use unity modules, code can be downloaded as sources archive of required release from [Releases page](`https://github.com/Leopotam/ecs-unityintegration/releases`).
