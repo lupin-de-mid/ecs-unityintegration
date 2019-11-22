@@ -95,21 +95,21 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies ()) {
                 foreach (var type in assembly.GetTypes ()) {
                     if (typeof (IEcsComponentInspector).IsAssignableFrom (type) && !type.IsInterface) {
-                        var inspector = Activator.CreateInstance (type) as IEcsComponentInspector;
-                        var componentType = inspector.GetFieldType ();
-                        if (_inspectors.ContainsKey (componentType)) {
-                            Debug.LogWarningFormat ("Inspector for \"{0}\" already exists, new inspector will be used instead.", componentType.Name);
+                        if (Activator.CreateInstance (type) is IEcsComponentInspector inspector) {
+                            var componentType = inspector.GetFieldType ();
+                            if (_inspectors.ContainsKey (componentType)) {
+                                Debug.LogWarningFormat ("Inspector for \"{0}\" already exists, new inspector will be used instead.", componentType.Name);
+                            }
+                            _inspectors[componentType] = inspector;
                         }
-                        _inspectors[componentType] = inspector;
                     }
                 }
             }
         }
 
         public static bool Render (string label, Type type, object value, EcsEntityObserver observer) {
-            IEcsComponentInspector inspector;
-            if (_inspectors.TryGetValue (type, out inspector)) {
-                inspector.OnGUI (label, value, observer.World, observer.Entity);
+            if (_inspectors.TryGetValue (type, out var inspector)) {
+                inspector.OnGUI (label, value, observer.World, ref observer.Entity);
                 return true;
             }
             return false;
@@ -132,6 +132,7 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
         /// <param name="value">Value of field.</param>
         /// <param name="world">World instance.</param>
         /// <param name="entityId">Entity id.</param>
-        void OnGUI (string label, object value, EcsWorld world, in EcsEntity entityId);
+        // ReSharper disable once InconsistentNaming
+        void OnGUI (string label, object value, EcsWorld world, ref EcsEntity entityId);
     }
 }

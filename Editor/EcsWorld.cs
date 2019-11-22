@@ -12,7 +12,7 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
     [CustomEditor (typeof (EcsWorldObserver))]
     sealed class EcsWorldObserverInspector : UnityEditor.Editor {
         public override void OnInspectorGUI () {
-            var observer = target as EcsWorldObserver;
+            var observer = (EcsWorldObserver) target;
             var stats = observer.GetStats ();
             var guiEnabled = GUI.enabled;
             GUI.enabled = true;

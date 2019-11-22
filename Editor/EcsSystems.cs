@@ -14,7 +14,7 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
         public override void OnInspectorGUI () {
             var savedState = GUI.enabled;
             GUI.enabled = true;
-            var observer = target as EcsSystemsObserver;
+            var observer = (EcsSystemsObserver) target;
             var systemsGroup = observer.GetSystems ();
 
             GUILayout.BeginVertical (GUI.skin.box);
@@ -43,7 +43,7 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
                     var item = systems.Items[i];
                     if (item is IEcsInitSystem) {
                         var asSystems = item as EcsSystems;
-                        EditorGUILayout.LabelField (asSystems != null ? $"[{asSystems.Name ?? asSystems.GetType().Name}]" : systems.Items[i].GetType ().Name);
+                        EditorGUILayout.LabelField (asSystems != null ? $"[{asSystems.Name ?? asSystems.GetType ().Name}]" : systems.Items[i].GetType ().Name);
                         if (asSystems != null) {
                             OnInitSystemsGUI (asSystems);
                         }
@@ -60,8 +60,8 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
                 for (var i = 0; i < systems.Count; i++) {
                     var runItem = systems.Items[i];
                     var asSystems = runItem.System as EcsSystems;
-                    var name = asSystems != null ? $"[{asSystems.Name ?? asSystems.GetType ().Name}]" : runItem.System.GetType ().Name;
-                    runItem.Active = EditorGUILayout.ToggleLeft (name, runItem.Active);
+                    var systemName = asSystems != null ? $"[{asSystems.Name ?? asSystems.GetType ().Name}]" : runItem.System.GetType ().Name;
+                    runItem.Active = EditorGUILayout.ToggleLeft (systemName, runItem.Active);
                     if (asSystems != null && runItem.Active) {
                         OnRunSystemsGUI (asSystems);
                     }
@@ -78,7 +78,7 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
                     var item = systems.Items[i];
                     if (item is IEcsDestroySystem) {
                         var asSystems = item as EcsSystems;
-                        EditorGUILayout.LabelField (asSystems != null ? $"[{asSystems.Name ?? asSystems.GetType().Name}]" : systems.Items[i].GetType ().Name);
+                        EditorGUILayout.LabelField (asSystems != null ? $"[{asSystems.Name ?? asSystems.GetType ().Name}]" : systems.Items[i].GetType ().Name);
                         if (asSystems != null) {
                             OnDestroySystemsGUI (asSystems);
                         }
