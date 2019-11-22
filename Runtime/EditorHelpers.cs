@@ -18,9 +18,9 @@ namespace Leopotam.Ecs.UnityIntegration {
             }
             var constraints = "";
             foreach (var constr in type.GetGenericArguments ()) {
-                constraints += constraints.Length > 0 ? string.Format (", {0}", GetCleanGenericTypeName (constr)) : constr.Name;
+                constraints += constraints.Length > 0 ? $", {GetCleanGenericTypeName (constr)}" : constr.Name;
             }
-            return string.Format ("{0}<{1}>", type.Name.Substring (0, type.Name.LastIndexOf ("`")), constraints);
+            return $"{type.Name.Substring (0, type.Name.LastIndexOf ("`", StringComparison.Ordinal))}<{constraints}>";
         }
     }
 
@@ -82,7 +82,7 @@ namespace Leopotam.Ecs.UnityIntegration {
             return _world.GetStats ();
         }
 
-        void IEcsWorldDebugListener.OnEntityCreated (in EcsEntity entity) {
+        void IEcsWorldDebugListener.OnEntityCreated (EcsEntity entity) {
             GameObject go;
             if (!_entities.TryGetValue (entity.GetInternalId (), out go)) {
                 go = new GameObject ();
@@ -100,7 +100,7 @@ namespace Leopotam.Ecs.UnityIntegration {
             go.SetActive (true);
         }
 
-        void IEcsWorldDebugListener.OnEntityDestroyed (in EcsEntity entity) {
+        void IEcsWorldDebugListener.OnEntityDestroyed (EcsEntity entity) {
             GameObject go;
             if (!_entities.TryGetValue (entity.GetInternalId (), out go)) {
                 throw new Exception ("Unity visualization not exists, looks like a bug");
@@ -109,11 +109,11 @@ namespace Leopotam.Ecs.UnityIntegration {
             go.SetActive (false);
         }
 
-        void IEcsWorldDebugListener.OnComponentAdded (in EcsEntity entity, object component) {
+        void IEcsWorldDebugListener.OnComponentAdded (EcsEntity entity, object component) {
             UpdateEntityName (entity, true);
         }
 
-        void IEcsWorldDebugListener.OnComponentRemoved (in EcsEntity entity, object component) {
+        void IEcsWorldDebugListener.OnComponentRemoved (EcsEntity entity, object component) {
             UpdateEntityName (entity, true);
         }
 
@@ -124,16 +124,17 @@ namespace Leopotam.Ecs.UnityIntegration {
             Destroy (gameObject);
         }
 
-        void UpdateEntityName (in EcsEntity entity, bool requestComponents) {
-            var entityName = entity.GetInternalId ().ToString ("D8");
+        void UpdateEntityName (EcsEntity entity, bool requestComponents) {
+            var entityId = entity.GetInternalId ();
+            var entityName = entityId.ToString ("D8");
             if (entity.IsAlive () && requestComponents) {
                 var count = entity.GetComponents (ref _componentsCache);
                 for (var i = 0; i < count; i++) {
-                    entityName = string.Format ("{0}:{1}", entityName, EditorHelpers.GetCleanGenericTypeName (_componentsCache[i].GetType ()));
+                    entityName = $"{entityName}:{EditorHelpers.GetCleanGenericTypeName (_componentsCache[i].GetType ())}";
                     _componentsCache[i] = null;
                 }
             }
-            _entities[entity.GetInternalId ()].name = entityName;
+            _entities[entityId].name = entityName;
         }
 
         void OnDestroy () {
