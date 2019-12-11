@@ -11,11 +11,12 @@ using UnityEngine;
 namespace Leopotam.Ecs.UnityIntegration.Editor {
     [CustomEditor (typeof (EcsSystemsObserver))]
     sealed class EcsSystemsObserverInspector : UnityEditor.Editor {
+        EcsSystemsObserver _observer;
+
         public override void OnInspectorGUI () {
             var savedState = GUI.enabled;
             GUI.enabled = true;
-            var observer = (EcsSystemsObserver) target;
-            var systemsGroup = observer.GetSystems ();
+            var systemsGroup = _observer.GetSystems ();
 
             GUILayout.BeginVertical (GUI.skin.box);
             EditorGUILayout.LabelField ("Init systems", EditorStyles.boldLabel);
@@ -33,6 +34,14 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
             GUILayout.EndVertical ();
 
             GUI.enabled = savedState;
+        }
+
+        void OnEnable () {
+            _observer = (EcsSystemsObserver) target;
+        }
+
+        void OnDisable () {
+            _observer = null;
         }
 
         void OnInitSystemsGUI (EcsSystems systemsGroup) {
