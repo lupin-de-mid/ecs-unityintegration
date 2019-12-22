@@ -89,7 +89,7 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
     }
 
     static class EcsComponentInspectors {
-        static readonly Dictionary<Type, IEcsComponentInspector> _inspectors = new Dictionary<Type, IEcsComponentInspector> ();
+        static readonly Dictionary<Type, IEcsComponentInspector> Inspectors = new Dictionary<Type, IEcsComponentInspector> ();
 
         static EcsComponentInspectors () {
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies ()) {
@@ -97,10 +97,10 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
                     if (typeof (IEcsComponentInspector).IsAssignableFrom (type) && !type.IsInterface) {
                         if (Activator.CreateInstance (type) is IEcsComponentInspector inspector) {
                             var componentType = inspector.GetFieldType ();
-                            if (_inspectors.ContainsKey (componentType)) {
+                            if (Inspectors.ContainsKey (componentType)) {
                                 Debug.LogWarningFormat ("Inspector for \"{0}\" already exists, new inspector will be used instead.", componentType.Name);
                             }
-                            _inspectors[componentType] = inspector;
+                            Inspectors[componentType] = inspector;
                         }
                     }
                 }
@@ -108,7 +108,7 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
         }
 
         public static bool Render (string label, Type type, object value, EcsEntityObserver observer) {
-            if (_inspectors.TryGetValue (type, out var inspector)) {
+            if (Inspectors.TryGetValue (type, out var inspector)) {
                 inspector.OnGUI (label, value, observer.World, ref observer.Entity);
                 return true;
             }

@@ -10,6 +10,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+// ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable InconsistentNaming
+
 namespace Leopotam.Ecs.UnityIntegration {
     public static class EditorHelpers {
         public static string GetCleanGenericTypeName (Type type) {
@@ -17,8 +20,8 @@ namespace Leopotam.Ecs.UnityIntegration {
                 return type.Name;
             }
             var constraints = "";
-            foreach (var constr in type.GetGenericArguments ()) {
-                constraints += constraints.Length > 0 ? $", {GetCleanGenericTypeName (constr)}" : constr.Name;
+            foreach (var constraint in type.GetGenericArguments ()) {
+                constraints += constraints.Length > 0 ? $", {GetCleanGenericTypeName (constraint)}" : constraint.Name;
             }
             return $"{type.Name.Substring (0, type.Name.LastIndexOf ("`", StringComparison.Ordinal))}<{constraints}>";
         }
@@ -33,8 +36,8 @@ namespace Leopotam.Ecs.UnityIntegration {
         EcsSystems _systems;
 
         public static GameObject Create (EcsSystems systems) {
-            if (systems == null) { throw new ArgumentNullException ("systems"); }
-            var go = new GameObject (systems.Name != null ? string.Format ("[ECS-SYSTEMS {0}]", systems.Name) : "[ECS-SYSTEMS]");
+            if (systems == null) { throw new ArgumentNullException (nameof (systems)); }
+            var go = new GameObject (systems.Name != null ? $"[ECS-SYSTEMS {systems.Name}]" : "[ECS-SYSTEMS]");
             DontDestroyOnLoad (go);
             go.hideFlags = HideFlags.NotEditable;
             var observer = go.AddComponent<EcsSystemsObserver> ();
@@ -64,16 +67,29 @@ namespace Leopotam.Ecs.UnityIntegration {
 
     public sealed class EcsWorldObserver : MonoBehaviour, IEcsWorldDebugListener {
         EcsWorld _world;
-        readonly Dictionary<int, GameObject> _entities = new Dictionary<int, GameObject> (1024);
+        public readonly Dictionary<int, GameObject> EntityGameObjects = new Dictionary<int, GameObject> (1024);
         static object[] _componentsCache = new object[32];
 
+        Transform _entitiesRoot;
+        Transform _filtersRoot;
+
         public static GameObject Create (EcsWorld world, string name = null) {
-            if (world == null) { throw new ArgumentNullException ("world"); }
-            var go = new GameObject (name != null ? string.Format ("[ECS-WORLD {0}]", name) : "[ECS-WORLD]");
+            if (world == null) { throw new ArgumentNullException (nameof (world)); }
+            var go = new GameObject (name != null ? $"[ECS-WORLD {name}]" : "[ECS-WORLD]");
             DontDestroyOnLoad (go);
             go.hideFlags = HideFlags.NotEditable;
             var observer = go.AddComponent<EcsWorldObserver> ();
             observer._world = world;
+            var worldTr = observer.transform;
+            // entities root.
+            observer._entitiesRoot = new GameObject ("Entities").transform;
+            observer._entitiesRoot.gameObject.hideFlags = HideFlags.NotEditable;
+            observer._entitiesRoot.SetParent (worldTr, false);
+            // filters root.
+            observer._filtersRoot = new GameObject ("Filters").transform;
+            observer._filtersRoot.gameObject.hideFlags = HideFlags.NotEditable;
+            observer._filtersRoot.SetParent (worldTr, false);
+            // subscription to events. 
             world.AddDebugListener (observer);
             return go;
         }
@@ -83,15 +99,14 @@ namespace Leopotam.Ecs.UnityIntegration {
         }
 
         void IEcsWorldDebugListener.OnEntityCreated (EcsEntity entity) {
-            GameObject go;
-            if (!_entities.TryGetValue (entity.GetInternalId (), out go)) {
+            if (!EntityGameObjects.TryGetValue (entity.GetInternalId (), out var go)) {
                 go = new GameObject ();
-                go.transform.SetParent (transform, false);
+                go.transform.SetParent (_entitiesRoot, false);
                 go.hideFlags = HideFlags.NotEditable;
                 var unityEntity = go.AddComponent<EcsEntityObserver> ();
                 unityEntity.World = _world;
                 unityEntity.Entity = entity;
-                _entities[entity.GetInternalId ()] = go;
+                EntityGameObjects[entity.GetInternalId ()] = go;
                 UpdateEntityName (entity, false);
             } else {
                 // need to update cached entity generation.
@@ -101,12 +116,36 @@ namespace Leopotam.Ecs.UnityIntegration {
         }
 
         void IEcsWorldDebugListener.OnEntityDestroyed (EcsEntity entity) {
-            GameObject go;
-            if (!_entities.TryGetValue (entity.GetInternalId (), out go)) {
+            if (!EntityGameObjects.TryGetValue (entity.GetInternalId (), out var go)) {
                 throw new Exception ("Unity visualization not exists, looks like a bug");
             }
             UpdateEntityName (entity, false);
             go.SetActive (false);
+        }
+
+        void IEcsWorldDebugListener.OnFilterCreated (EcsFilter filter) {
+            var go = new GameObject ();
+            go.transform.SetParent (_filtersRoot);
+            go.hideFlags = HideFlags.NotEditable;
+            var observer = go.AddComponent<EcsFilterObserver> ();
+            observer.World = this;
+            observer.Filter = filter;
+
+            // included components.
+            var goName = $"Inc<{filter.IncludedTypes[0].Name}";
+            for (var i = 1; i < filter.IncludedTypes.Length; i++) {
+                goName += $",{filter.IncludedTypes[i].Name}";
+            }
+            goName += ">";
+            // excluded components.
+            if (filter.ExcludedTypes != null) {
+                goName += $".Exc<{filter.ExcludedTypes[0].Name}";
+                for (var i = 1; i < filter.ExcludedTypes.Length; i++) {
+                    goName += $",{filter.ExcludedTypes[i].Name}";
+                }
+                goName += ">";
+            }
+            go.name = goName;
         }
 
         void IEcsWorldDebugListener.OnComponentAdded (EcsEntity entity, object component) {
@@ -134,7 +173,7 @@ namespace Leopotam.Ecs.UnityIntegration {
                     _componentsCache[i] = null;
                 }
             }
-            _entities[entityId].name = entityName;
+            EntityGameObjects[entityId].name = entityName;
         }
 
         void OnDestroy () {
@@ -143,6 +182,11 @@ namespace Leopotam.Ecs.UnityIntegration {
                 _world = null;
             }
         }
+    }
+
+    public sealed class EcsFilterObserver : MonoBehaviour {
+        public EcsWorldObserver World;
+        public EcsFilter Filter;
     }
 }
 #endif
