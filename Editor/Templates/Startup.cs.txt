@@ -17,12 +17,17 @@ namespace #NS# {
                 // Register your systems here, for example:
                 // .Add (new TestSystem1 ())
                 // .Add (new TestSystem2 ())
+                // Register one-frame components here, for example:
+                // .OneFrame<TestComponent1> ()
+                // .OneFrame<TestComponent2> ()
+                // Inject service instances here, for example:
+                // .Inject (new CameraService ())
+                // .Inject (new NavMeshSupport ())
                 .Init ();
         }
 
         void Update () {
             _systems.Run ();
-            _world.EndFrame ();
         }
 
         void OnDisable () {
