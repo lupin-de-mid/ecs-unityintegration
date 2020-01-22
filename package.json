@@ -4,7 +4,7 @@
     "displayName": "LeoECS Unity Integration",
     "description": "UnityEditor integration for LeoECS Entity Component System framework.",
     "unity": "2019.1",
-    "version": "2019.12.22",
+    "version": "2020.1.22",
     "keywords": [
         "leoecs",
         "ecs",
