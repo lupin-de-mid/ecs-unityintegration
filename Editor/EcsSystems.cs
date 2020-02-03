@@ -33,16 +33,6 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
             OnDestroySystemsGUI (systemsGroup);
             GUILayout.EndVertical ();
 
-            GUILayout.BeginVertical (GUI.skin.box);
-            EditorGUILayout.LabelField ("OneFrame Components", EditorStyles.boldLabel);
-            var oneFrames = _observer.GetSystems ().GetOneFrames ();
-            EditorGUI.indentLevel++;
-            foreach (var pair in oneFrames) {
-                EditorGUILayout.LabelField (pair.Key.Name);
-            }
-            EditorGUI.indentLevel--;
-            GUILayout.EndVertical ();
-
             GUI.enabled = savedState;
         }
 
@@ -76,7 +66,25 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
             for (var i = 0; i < systems.Count; i++) {
                 var runItem = systems.Items[i];
                 var asSystems = runItem.System as EcsSystems;
-                var systemName = asSystems != null ? $"[{asSystems.Name ?? asSystems.GetType ().Name}]" : runItem.System.GetType ().Name;
+                string systemName;
+                var type = runItem.System.GetType ();
+                if (asSystems != null) {
+                    systemName = $"[{type.Name}]";
+                } else {
+                    systemName = type.Name;
+                    if (type.IsGenericType) {
+                        var tilda = systemName.IndexOf ('`');
+                        if (tilda > 0) {
+                            systemName = systemName.Remove (tilda);
+                        }
+                        systemName += "<";
+                        var args = type.GetGenericArguments ();
+                        for (var ii = 0; ii < args.Length; ii++) {
+                            systemName += ii == 0 ? args[ii].Name : $",{args[ii].Name}";
+                        }
+                        systemName += ">";
+                    }
+                }
                 runItem.Active = EditorGUILayout.ToggleLeft (systemName, runItem.Active);
                 if (asSystems != null && runItem.Active) {
                     OnRunSystemsGUI (asSystems);

@@ -148,11 +148,7 @@ namespace Leopotam.Ecs.UnityIntegration {
             go.name = goName;
         }
 
-        void IEcsWorldDebugListener.OnComponentAdded (EcsEntity entity, object component) {
-            UpdateEntityName (entity, true);
-        }
-
-        void IEcsWorldDebugListener.OnComponentRemoved (EcsEntity entity, object component) {
+        void IEcsWorldDebugListener.OnComponentListChanged (EcsEntity entity) {
             UpdateEntityName (entity, true);
         }
 
