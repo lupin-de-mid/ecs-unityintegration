@@ -16,7 +16,7 @@ This repository can be installed as unity module directly from git url. In this 
 ```
 
 ## As source
-If you can't / don't want to use unity modules, code can be downloaded as sources archive of last release from [Releases page](`https://github.com/Leopotam/ecs-unityintegration/releases/tag/2020.2.22`) or cloned from [classes-based branch](https://github.com/Leopotam/ecs-unityintegration/tree/classes-based).
+If you can't / don't want to use unity modules, code can be downloaded as sources archive of last release from [Releases page](https://github.com/Leopotam/ecs-unityintegration/releases/tag/2020.2.22) or cloned from [classes-based branch](https://github.com/Leopotam/ecs-unityintegration/tree/classes-based).
 
 # Editor integration
 
