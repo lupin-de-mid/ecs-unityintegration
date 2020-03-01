@@ -25,7 +25,7 @@ namespace Leopotam.Ecs2.UnityIntegration.Editor.Prototypes {
         const string ComponentTemplate = "Component.cs.txt";
         const string ComponentFlagTemplate = "ComponentFlag.cs.txt";
 
-        [MenuItem ("Assets/Create/LeoECS2/Create Startup template", false, -200)]
+        [MenuItem ("Assets/Create/LeoECS/Create Startup template", false, -200)]
         static void CreateStartupTpl () {
             var assetPath = GetAssetPath ();
             CreateAndRenameAsset ($"{assetPath}/EcsStartup.cs", GetIcon (), (name) => {
@@ -52,25 +52,25 @@ namespace Leopotam.Ecs2.UnityIntegration.Editor.Prototypes {
             }
         }
 
-        [MenuItem ("Assets/Create/LeoECS2/Systems/Create InitSystem template", false, -199)]
+        [MenuItem ("Assets/Create/LeoECS/Systems/Create InitSystem template", false, -199)]
         static void CreateInitSystemTpl () {
             CreateAndRenameAsset ($"{GetAssetPath ()}/EcsInitSystem.cs", GetIcon (),
                 (name) => CreateTemplateInternal (GetTemplateContent (InitSystemTemplate), name));
         }
 
-        [MenuItem ("Assets/Create/LeoECS2/Systems/Create RunSystem template", false, -198)]
+        [MenuItem ("Assets/Create/LeoECS/Systems/Create RunSystem template", false, -198)]
         static void CreateRunSystemTpl () {
             CreateAndRenameAsset ($"{GetAssetPath ()}/EcsRunSystem.cs", GetIcon (),
                 (name) => CreateTemplateInternal (GetTemplateContent (RunSystemTemplate), name));
         }
 
-        [MenuItem ("Assets/Create/LeoECS2/Components/Create Component (common) template", false, -197)]
+        [MenuItem ("Assets/Create/LeoECS/Components/Create Component (common) template", false, -197)]
         static void CreateComponentTpl () {
             CreateAndRenameAsset ($"{GetAssetPath ()}/EcsComponent.cs", GetIcon (),
                 (name) => CreateTemplateInternal (GetTemplateContent (ComponentTemplate), name));
         }
 
-        [MenuItem ("Assets/Create/LeoECS2/Components/Create Component (no-data) template", false, -196)]
+        [MenuItem ("Assets/Create/LeoECS/Components/Create Component (no-data) template", false, -196)]
         static void CreateComponentFlagTpl () {
             CreateAndRenameAsset ($"{GetAssetPath ()}/EcsComponentFlag.cs", GetIcon (),
                 (name) => CreateTemplateInternal (GetTemplateContent (ComponentFlagTemplate), name));
