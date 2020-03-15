@@ -57,7 +57,7 @@ namespace Leopotam.Ecs.UnityIntegration {
             }
         }
 
-        void IEcsSystemsDebugListener.OnSystemsDestroyed () {
+        void IEcsSystemsDebugListener.OnSystemsDestroyed (EcsSystems systems) {
             // for immediate unregistering this MonoBehaviour from ECS.
             OnDestroy ();
             // for delayed destroying GameObject.
@@ -152,7 +152,7 @@ namespace Leopotam.Ecs.UnityIntegration {
             UpdateEntityName (entity, true);
         }
 
-        void IEcsWorldDebugListener.OnWorldDestroyed () {
+        void IEcsWorldDebugListener.OnWorldDestroyed (EcsWorld world) {
             // for immediate unregistering this MonoBehaviour from ECS.
             OnDestroy ();
             // for delayed destroying GameObject.
