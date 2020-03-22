@@ -12,7 +12,7 @@ using UnityEditor;
 using UnityEditor.ProjectWindowCallback;
 using UnityEngine;
 
-namespace Leopotam.Ecs.UnityIntegration.Editor.Prototypes {
+namespace Leopotam.Ecs2.UnityIntegration.Editor.Prototypes {
     /// <summary>
     /// Generates templates of ecs user classes.
     /// </summary>

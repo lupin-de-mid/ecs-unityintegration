@@ -38,7 +38,7 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
             if (count > 0) {
                 var ego = _observer.World.EntityGameObjects;
                 foreach (var idx in _observer.Filter) {
-                    ref var entity = ref _observer.Filter.Entities[idx];
+                    ref var entity = ref _observer.Filter.GetEntity(idx);
                     if (entity.IsAlive ()) {
                         ego.TryGetValue (entity.GetInternalId (), out var entityGo);
                         EditorGUILayout.ObjectField (entityGo, typeof (GameObject), true);

@@ -2,11 +2,11 @@
 
 namespace #NS# {
     sealed class #SCRIPTNAME# : IEcsRunSystem {
-        // Auto-injected fields.
+        // auto-injected fields.
         readonly EcsWorld _world = null;
         
         void IEcsRunSystem.Run () {
-            // Add your run code here.
+            // add your run code here.
         }
     }
 }

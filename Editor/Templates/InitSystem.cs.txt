@@ -2,11 +2,11 @@
 
 namespace #NS# {
     sealed class #SCRIPTNAME# : IEcsInitSystem {
-        // Auto-injected fields.
+        // auto-injected fields.
         readonly EcsWorld _world = null;
         
-        void IEcsInitSystem.Init () {
-            // Add your initialize code here.
+        public void Init () {
+            // add your initialize code here.
         }
     }
 }

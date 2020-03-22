@@ -80,6 +80,7 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
                         systemName += "<";
                         var args = type.GetGenericArguments ();
                         for (var ii = 0; ii < args.Length; ii++) {
+                            // systemName += $",{args[ii].Name}";
                             systemName += ii == 0 ? args[ii].Name : $",{args[ii].Name}";
                         }
                         systemName += ">";

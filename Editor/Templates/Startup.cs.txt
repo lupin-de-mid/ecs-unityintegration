@@ -16,22 +16,22 @@ namespace #NS# {
             Leopotam.Ecs.UnityIntegration.EcsSystemsObserver.Create (_systems);
 #endif
             _systems
-                // Register your systems here, for example:
+                // register your systems here, for example:
                 // .Add (new TestSystem1 ())
                 // .Add (new TestSystem2 ())
-                // Register one-frame components here, for example:
+                
+                // register one-frame components (order is important), for example:
                 // .OneFrame<TestComponent1> ()
                 // .OneFrame<TestComponent2> ()
-                // Inject service instances here, for example:
+                
+                // inject service instances here (order doesn't important), for example:
                 // .Inject (new CameraService ())
                 // .Inject (new NavMeshSupport ())
                 .Init ();
         }
 
         void Update () {
-            if (_systems != null) {
-                _systems.Run ();
-            }
+            _systems?.Run ();
         }
 
         void OnDestroy () {

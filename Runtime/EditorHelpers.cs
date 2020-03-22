@@ -57,7 +57,7 @@ namespace Leopotam.Ecs.UnityIntegration {
             }
         }
 
-        void IEcsSystemsDebugListener.OnSystemsDestroyed () {
+        void IEcsSystemsDebugListener.OnSystemsDestroyed (EcsSystems systems) {
             // for immediate unregistering this MonoBehaviour from ECS.
             OnDestroy ();
             // for delayed destroying GameObject.
@@ -68,7 +68,7 @@ namespace Leopotam.Ecs.UnityIntegration {
     public sealed class EcsWorldObserver : MonoBehaviour, IEcsWorldDebugListener {
         EcsWorld _world;
         public readonly Dictionary<int, GameObject> EntityGameObjects = new Dictionary<int, GameObject> (1024);
-        static object[] _componentsCache = new object[32];
+        static Type[] _componentTypesCache = new Type[32];
 
         Transform _entitiesRoot;
         Transform _filtersRoot;
@@ -152,7 +152,7 @@ namespace Leopotam.Ecs.UnityIntegration {
             UpdateEntityName (entity, true);
         }
 
-        void IEcsWorldDebugListener.OnWorldDestroyed () {
+        void IEcsWorldDebugListener.OnWorldDestroyed (EcsWorld world) {
             // for immediate unregistering this MonoBehaviour from ECS.
             OnDestroy ();
             // for delayed destroying GameObject.
@@ -163,10 +163,10 @@ namespace Leopotam.Ecs.UnityIntegration {
             var entityId = entity.GetInternalId ();
             var entityName = entityId.ToString ("D8");
             if (entity.IsAlive () && requestComponents) {
-                var count = entity.GetComponents (ref _componentsCache);
+                var count = entity.GetComponentTypes (ref _componentTypesCache);
                 for (var i = 0; i < count; i++) {
-                    entityName = $"{entityName}:{EditorHelpers.GetCleanGenericTypeName (_componentsCache[i].GetType ())}";
-                    _componentsCache[i] = null;
+                    entityName = $"{entityName}:{EditorHelpers.GetCleanGenericTypeName (_componentTypesCache[i])}";
+                    _componentTypesCache[i] = null;
                 }
             }
             EntityGameObjects[entityId].name = entityName;

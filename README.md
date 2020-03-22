@@ -3,6 +3,10 @@
 # Unity integration for Entity Component System framework
 [Unity integration](https://github.com/Leopotam/ecs-unityintegration) for [ECS framework](https://github.com/Leopotam/ecs).
 
+> **Important! It's "structs-based" version, if you search "classes-based" version - check [classes-based branch](https://github.com/Leopotam/ecs-unityintegration/tree/classes-based)!**
+
+> C#7.3 or above required for this framework.
+
 > Tested on unity 2019.1 (dependent on Unity engine) and contains assembly definition for compiling to separate assembly file for performance reason.
 
 > Dependent on [ECS framework](https://github.com/Leopotam/ecs) - ECS framework should be imported to unity project first.

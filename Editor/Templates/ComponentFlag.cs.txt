@@ -1,5 +1,5 @@
 ﻿using Leopotam.Ecs;
 
 namespace #NS# {
-    sealed class #SCRIPTNAME# : IEcsIgnoreInFilter { }
+    struct #SCRIPTNAME# : IEcsIgnoreInFilter { }
 }
