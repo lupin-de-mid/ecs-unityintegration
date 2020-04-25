@@ -69,7 +69,7 @@ namespace Leopotam.Ecs.UnityIntegration.Editor {
                 string systemName;
                 var type = runItem.System.GetType ();
                 if (asSystems != null) {
-                    systemName = $"[{type.Name}]";
+                    systemName = $"[{asSystems.Name ?? type.Name}]";
                 } else {
                     systemName = type.Name;
                     if (type.IsGenericType) {
